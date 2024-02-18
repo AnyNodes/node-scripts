@@ -1,3 +1,5 @@
+# curl -sL https://raw.githubusercontent.com/AnyNodes/node-scripts/main/wield-installer-noninteractive.sh -o wield-installer-noninteractive.sh && sudo bash wield-installer-noninteractive.sh
+
 #!/bin/bash
 
 #######################################################
