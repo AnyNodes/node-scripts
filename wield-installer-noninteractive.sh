@@ -1,3 +1,5 @@
+# logon dagger and go to /home/dagger/
+
 # download
 # curl -sL https://raw.githubusercontent.com/AnyNodes/node-scripts/main/wield-installer-noninteractive.sh -o wield-installer-noninteractive.sh && chmod +x wield-installer-noninteractive.sh
 
