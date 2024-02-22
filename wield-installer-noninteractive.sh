@@ -944,5 +944,6 @@ if [[ "$1" == "upgrade-noninteractive" ]]; then
   upgrade_noninteractive
   start_wield
   check_wield_version
+  get_node_id
   exit 0
 fi
