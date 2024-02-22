@@ -68,81 +68,81 @@ install() {
   install_dependencies
 
 
-### Get number of CPU cores
-NUM_CPU=$(lscpu | grep "^CPU(s):" | awk '{print $2}')
+  ### Get number of CPU cores
+  NUM_CPU=$(lscpu | grep "^CPU(s):" | awk '{print $2}')
 
-### get the thread(s) per core
-# threads_per_core=$(lscpu | grep "^Thread(s) per core:" | awk '{print $4}')
-# CPU_THREADS=$(($NUM_CPU*$threads_per_core))
+  ### get the thread(s) per core
+  # threads_per_core=$(lscpu | grep "^Thread(s) per core:" | awk '{print $4}')
+  # CPU_THREADS=$(($NUM_CPU*$threads_per_core))
 
-### Get total RAM in GB
-TOTAL_RAM=$(awk '/MemTotal/ {printf "%.3f\n", $2/1024/1024}' /proc/meminfo)
+  ### Get total RAM in GB
+  TOTAL_RAM=$(awk '/MemTotal/ {printf "%.3f\n", $2/1024/1024}' /proc/meminfo)
 
-### Get OS information
-OS=$(lsb_release -d)
-CURRENT_VERSION=$(uname -r | cut -c1-4)
+  ### Get OS information
+  OS=$(lsb_release -d)
+  CURRENT_VERSION=$(uname -r | cut -c1-4)
 
-if [[ $OS != *"Ubuntu 22.04"* ]]; then
-  echo "Currently only Ubuntu 22.04 is officially supported. If you are installing with a different OS, you may run into issues."
-fi
+  if [[ $OS != *"Ubuntu 22.04"* ]]; then
+    echo "Currently only Ubuntu 22.04 is officially supported. If you are installing with a different OS, you may run into issues."
+  fi
 
-echo ""
-echo "Number of CPUs: $NUM_CPU"
-# echo "Number of CPU Threads: $CPU_THREADS"
-echo "Total RAM: $TOTAL_RAM GB"
-echo "$OS"
-echo "Current Kernel Version: $CURRENT_VERSION"
+  echo ""
+  echo "Number of CPUs: $NUM_CPU"
+  # echo "Number of CPU Threads: $CPU_THREADS"
+  echo "Total RAM: $TOTAL_RAM GB"
+  echo "$OS"
+  echo "Current Kernel Version: $CURRENT_VERSION"
 
-### Checks CPU, RAM, User
-system_checks
+  ### Checks CPU, RAM, User
+  system_checks
 
-###############
-### Install ###
-###############
+  ###############
+  ### Install ###
+  ###############
 
-#Make Folders
-make_folders
+  #Make Folders
+  make_folders
 
-# Run Keygen
-keygen
+  # Run Keygen
+  keygen
 
-#Create config.toml
-create_config
+  #Create config.toml
+  create_config
 
-#make sysctl changes and save
-sysctl_changes
-sudo sysctl -p
+  #make sysctl changes and save
+  sysctl_changes
+  sudo sysctl -p
 
-#build start_wield.sh with cpu config
-start_wield_build
-chmod +x start_wield.sh
+  #build start_wield.sh with cpu config
+  start_wield_build
+  chmod +x start_wield.sh
 
-#Make wield service
-make_wield_service
+  #Make wield service
+  make_wield_service
 
-echo "Install complete, would you like to enable the service now? (yes/no)"
-read input
-if [[ $input == "no" ]] || [[ $input == "n" ]]; then
-  echo "Please enable the service from the main menu when ready."
-  sleep 1
-elif [[ $input == "yes" ]] || [[ $input == "y" ]]; then
-  echo "Enabling now..."
-  sudo systemctl enable --now wield.service
-  sleep 1
-else
-  echo "Please enable the service from the main menu when ready."
-  sleep 1
-fi
+  echo "Install complete, would you like to enable the service now? (yes/no)"
+  read input
+  if [[ $input == "no" ]] || [[ $input == "n" ]]; then
+    echo "Please enable the service from the main menu when ready."
+    sleep 1
+  elif [[ $input == "yes" ]] || [[ $input == "y" ]]; then
+    echo "Enabling now..."
+    sudo systemctl enable --now wield.service
+    sleep 1
+  else
+    echo "Please enable the service from the main menu when ready."
+    sleep 1
+  fi
 
 
-### Check Status
-OUTPUT=$(sudo systemctl is-active $SERVICE_NAME)
+  ### Check Status
+  OUTPUT=$(sudo systemctl is-active $SERVICE_NAME)
 
-echo ""
-echo "Install is complete.  Installation status: $OUTPUT"
-echo "IMPORTANT: PLEASE LOGOUT AND/OR EXIT FROM THE DAGGER USER AND LOG BACK IN."
-echo "THESE CHANGES WILL NOT APPLY UNTIL YOU DO.  IF YOU DO NOT, YOU MAY RUN INTO FILE ISSUES."
-echo ""
+  echo ""
+  echo "Install is complete.  Installation status: $OUTPUT"
+  echo "IMPORTANT: PLEASE LOGOUT AND/OR EXIT FROM THE DAGGER USER AND LOG BACK IN."
+  echo "THESE CHANGES WILL NOT APPLY UNTIL YOU DO.  IF YOU DO NOT, YOU MAY RUN INTO FILE ISSUES."
+  echo ""
 }
 
 upgrade() {
@@ -432,37 +432,38 @@ upgrade_noninteractive() {
         
       elif [[ $STATUS == "failed" ]]; then
         echo "Service is currently failed, or was disabled.  Are you trying to upgrade (yes/no)?  This upgrade will fail if you have not ran the installer."
-              if [[ $input == "no" ]] || [[ $input == "n" ]]; then
-                echo "Exiting..."
-                exit 1
-              elif [[ $input == "yes" ]] || [[ $input == "y" ]]; then
-                rm "$WIELD_PATH"
-                wget -O "$WIELD_PATH" "$WIELD_URL"
+              install
+              # if [[ $input == "no" ]] || [[ $input == "n" ]]; then
+              #   echo "Exiting..."
+              #   exit 1
+              # elif [[ $input == "yes" ]] || [[ $input == "y" ]]; then
+              #   rm "$WIELD_PATH"
+              #   wget -O "$WIELD_PATH" "$WIELD_URL"
               
-                # Check if wget was successful
-                if [ $? -eq 0 ]; then
-                  echo "New wield binary downloaded successfully."
-                else
-                  echo "Failed to download new binary.  Check your internet connection and restart."
-                  exit 1
-                fi
-              fi
+              #   # Check if wget was successful
+              #   if [ $? -eq 0 ]; then
+              #     echo "New wield binary downloaded successfully."
+              #   else
+              #     echo "Failed to download new binary.  Check your internet connection and restart."
+              #     exit 1
+              #   fi
+              # fi
 
-              chmod +x $WIELD_PATH
-              rm /home/dagger/config.toml
-              create_config
+              # chmod +x $WIELD_PATH
+              # rm /home/dagger/config.toml
+              # create_config
 
-              # sudo systemctl start "$SERVICE_NAME"
-              sleep 2
+              # # sudo systemctl start "$SERVICE_NAME"
+              # sleep 2
 
-              # STATUS=$(sudo systemctl is-active $SERVICE_NAME)
-              echo "Upgrade complete."
-              check_wield_status
-              echo "Please wait 5 epochs before restarting the service. Monitor progress at https://dagger-hammer.shdwdrive.com/explorer"
-              echo "You can restart it via the main menu."
-              echo ""
-              echo ""
-              exit 1
+              # # STATUS=$(sudo systemctl is-active $SERVICE_NAME)
+              # echo "Upgrade complete."
+              # check_wield_status
+              # echo "Please wait 5 epochs before restarting the service. Monitor progress at https://dagger-hammer.shdwdrive.com/explorer"
+              # echo "You can restart it via the main menu."
+              # echo ""
+              # echo ""
+              # exit 1
       else
         failed_service 
       fi
