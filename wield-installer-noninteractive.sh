@@ -164,6 +164,91 @@ install() {
   echo ""
 }
 
+install_noninteractive() {
+  input="yes"
+  ### Dagger user check
+  check_dagger_user
+  ### Install Dependencies
+  install_dependencies
+
+
+  ### Get number of CPU cores
+  NUM_CPU=$(lscpu | grep "^CPU(s):" | awk '{print $2}')
+
+  ### get the thread(s) per core
+  # threads_per_core=$(lscpu | grep "^Thread(s) per core:" | awk '{print $4}')
+  # CPU_THREADS=$(($NUM_CPU*$threads_per_core))
+
+  ### Get total RAM in GB
+  TOTAL_RAM=$(awk '/MemTotal/ {printf "%.3f\n", $2/1024/1024}' /proc/meminfo)
+
+  ### Get OS information
+  OS=$(lsb_release -d)
+  CURRENT_VERSION=$(uname -r | cut -c1-4)
+
+  if [[ $OS != *"Ubuntu 22.04"* ]]; then
+    echo "Currently only Ubuntu 22.04 is officially supported. If you are installing with a different OS, you may run into issues."
+  fi
+
+  echo ""
+  echo "Number of CPUs: $NUM_CPU"
+  # echo "Number of CPU Threads: $CPU_THREADS"
+  echo "Total RAM: $TOTAL_RAM GB"
+  echo "$OS"
+  echo "Current Kernel Version: $CURRENT_VERSION"
+
+  ### Checks CPU, RAM, User
+  system_checks
+
+  ###############
+  ### Install ###
+  ###############
+
+  #Make Folders
+  make_folders
+
+  # Run Keygen
+  keygen
+
+  #Create config.toml
+  create_config
+
+  #make sysctl changes and save
+  sysctl_changes
+  sudo sysctl -p
+
+  #build start_wield.sh with cpu config
+  start_wield_build
+  chmod +x start_wield.sh
+
+  #Make wield service
+  make_wield_service
+
+  echo "Install complete, would you like to enable the service now? (yes/no)"
+  read input
+  if [[ $input == "no" ]] || [[ $input == "n" ]]; then
+    echo "Please enable the service from the main menu when ready."
+    sleep 1
+  elif [[ $input == "yes" ]] || [[ $input == "y" ]]; then
+    echo "Enabling now..."
+    sudo systemctl enable --now wield.service
+    sleep 1
+  else
+    echo "Please enable the service from the main menu when ready."
+    sleep 1
+  fi
+
+
+  ### Check Status
+  OUTPUT=$(sudo systemctl is-active $SERVICE_NAME)
+
+  echo ""
+  echo "Install is complete.  Installation status: $OUTPUT"
+  echo "IMPORTANT: PLEASE LOGOUT AND/OR EXIT FROM THE DAGGER USER AND LOG BACK IN."
+  echo "THESE CHANGES WILL NOT APPLY UNTIL YOU DO.  IF YOU DO NOT, YOU MAY RUN INTO FILE ISSUES."
+  echo ""
+}
+
 upgrade() {
   STATUS=$(sudo systemctl is-active $SERVICE_NAME)
   if [ "$(whoami)" != "dagger" ]; then
@@ -345,7 +430,7 @@ upgrade_noninteractive() {
   # Check if the command execution was successful and the output is not empty
   if [ $? -ne 0 ] || [ -z "$output" ]; then
       echo "Error occurred or Wield is not installed, please run the install from the main menu." 
-      install
+      install_noninteractive
       sleep 1
       return
   fi
