@@ -345,9 +345,9 @@ upgrade_noninteractive() {
   # Check if the command execution was successful and the output is not empty
   if [ $? -ne 0 ] || [ -z "$output" ]; then
       echo "Error occurred or Wield is not installed, please run the install from the main menu." 
-      echo "Exiting..."
+      install
       sleep 1
-      exit 1
+      return
   fi
   version=$(echo "$output" | awk '{print $2}')
 
