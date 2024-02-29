@@ -340,6 +340,7 @@ upgrade_noninteractive() {
     exit 1
   fi
 
+  chmod +x $WIELD_PATH
   output=$(/home/dagger/wield --version 2>&1)
   # Check if the command execution was successful and the output is not empty
   if [ $? -ne 0 ] || [ -z "$output" ]; then
