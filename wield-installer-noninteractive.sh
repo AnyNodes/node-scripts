@@ -61,6 +61,25 @@ TRUSTED_NODES=(
     "184.154.98.120:2030"
 )
 
+download_with_retry() {
+    local max_retries=3600
+    local attempt=0
+
+    while true; do
+        wget -O "$WIELD_PATH" "$WIELD_URL" && break || {
+            if [[ $attempt -lt $max_retries ]]; then
+                attempt=$((attempt + 1))
+                echo "download faileds, $attempt retry..."
+                sleep 1  # wait 1 second
+            else
+                echo "reached max_retries, give up downloading"
+                return 1
+            fi
+        }
+    done
+    echo "downloaded wield-latest successfully"
+}
+
 install() {
   ### Dagger user check
   check_dagger_user
@@ -200,7 +219,7 @@ upgrade() {
               echo "Service stopped successfully.  Downloading latest file..."
               sleep 1
               rm "$WIELD_PATH"
-              wget -O "$WIELD_PATH" "$WIELD_URL"
+              download_with_retry
               
               # Check if wget was successful
               if [ $? -eq 0 ]; then
@@ -237,7 +256,7 @@ upgrade() {
                 exit 1
               elif [[ $input == "yes" ]] || [[ $input == "y" ]]; then
                 rm "$WIELD_PATH"
-                wget -O "$WIELD_PATH" "$WIELD_URL"
+                download_with_retry
               
                 # Check if wget was successful
                 if [ $? -eq 0 ]; then
@@ -272,7 +291,7 @@ upgrade() {
                 exit 1
               elif [[ $input == "yes" ]] || [[ $input == "y" ]]; then
                 rm "$WIELD_PATH"
-                wget -O "$WIELD_PATH" "$WIELD_URL"
+                download_with_retry
               
                 # Check if wget was successful
                 if [ $? -eq 0 ]; then
@@ -367,7 +386,7 @@ upgrade_noninteractive() {
               echo "Service stopped successfully.  Downloading latest file..."
               sleep 1
               rm "$WIELD_PATH"
-              wget -O "$WIELD_PATH" "$WIELD_URL"
+              download_with_retry
               
               # Check if wget was successful
               if [ $? -eq 0 ]; then
@@ -403,7 +422,7 @@ upgrade_noninteractive() {
                 exit 1
               elif [[ $input == "yes" ]] || [[ $input == "y" ]]; then
                 rm "$WIELD_PATH"
-                wget -O "$WIELD_PATH" "$WIELD_URL"
+                download_with_retry
               
                 # Check if wget was successful
                 if [ $? -eq 0 ]; then
@@ -438,7 +457,7 @@ upgrade_noninteractive() {
               #   exit 1
               # elif [[ $input == "yes" ]] || [[ $input == "y" ]]; then
               #   rm "$WIELD_PATH"
-              #   wget -O "$WIELD_PATH" "$WIELD_URL"
+              #   download_with_retry
               
               #   # Check if wget was successful
               #   if [ $? -eq 0 ]; then
@@ -633,7 +652,7 @@ keygen() {
 
 make_folders(){
     rm "$WIELD_PATH"
-    wget -O "$WIELD_PATH" "$WIELD_URL"
+    download_with_retry
     chmod +x /home/dagger/wield
 
     echo "making historydb dir..."
@@ -736,7 +755,7 @@ failed_service() {
             exit 1
           fi
           rm "$WIELD_PATH"
-          wget -O "$WIELD_PATH" "$WIELD_URL"
+          download_with_retry
         
           # Check if wget was successful
           if [ $? -eq 0 ]; then
