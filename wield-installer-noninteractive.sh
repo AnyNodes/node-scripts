@@ -204,6 +204,8 @@ install_noninteractive() {
   ### Install ###
   ###############
 
+  echo "start installing"
+  
   #Make Folders
   make_folders
 
@@ -841,12 +843,7 @@ system_checks_noninteractive() {
     echo ""
     echo "16 Core CPU, 32GB RAM, Ubuntu 22.04, Kernel Version 5.15 or greater."
     echo ""
-    echo "**Do you wish to continue with the installation? (yes/no)**"
 
-    if [[ $input == "no" ]] || [[ $input == "n" ]]; then
-    echo "Exiting..."
-    exit 1
-    fi
 }
 
 install_dependencies() {
