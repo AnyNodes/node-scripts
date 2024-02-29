@@ -225,7 +225,7 @@ install_noninteractive() {
   make_wield_service
 
   echo "Install complete, would you like to enable the service now? (yes/no)"
-  read input
+
   if [[ $input == "no" ]] || [[ $input == "n" ]]; then
     echo "Please enable the service from the main menu when ready."
     sleep 1
@@ -842,7 +842,7 @@ system_checks_noninteractive() {
     echo "16 Core CPU, 32GB RAM, Ubuntu 22.04, Kernel Version 5.15 or greater."
     echo ""
     echo "**Do you wish to continue with the installation? (yes/no)**"
-    read input
+
     if [[ $input == "no" ]] || [[ $input == "n" ]]; then
     echo "Exiting..."
     exit 1
