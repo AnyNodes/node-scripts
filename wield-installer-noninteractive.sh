@@ -198,7 +198,7 @@ install_noninteractive() {
   echo "Current Kernel Version: $CURRENT_VERSION"
 
   ### Checks CPU, RAM, User
-  system_checks
+  system_checks_noninteractive
 
   ###############
   ### Install ###
@@ -771,6 +771,46 @@ WantedBy=multi-user.target
 
 
 system_checks() {
+    ### Check if CPU cores is less than 16
+    if (( NUM_CPU < 16 )); then
+    echo ""
+    echo "WARNING: Your machine has less than 16 CPU cores and will have performance issues running wield."
+    echo "Please ensure that your machine meets the minimum requirements as they have recently changed during testnet."
+    echo "Please see here for more information: https://docs.shdwdrive.com/wield#1.-node-requirements"
+    echo ""
+    echo "This is now a hard requirement for testnet.  Exiting..."
+    exit 1
+    fi
+
+    ### Check if total RAM is less than 32 GB
+    if (( $(echo "$TOTAL_RAM < 31" | bc -l) )); then
+    echo "WARNING: Your machine has less than 32 GB of RAM and will have performance issues running wield."
+    echo "Please ensure that your machine meets the minimum requirements.  Please see here for more information: https://docs.shdwdrive.com/wield#1.-node-requirements"
+    fi
+    ### Check dagger user
+    if [ "$(whoami)" != "dagger" ]; then
+    echo "This script must be run as dagger, please change to the dagger user or create the user based on the instructions found here: https://docs.shdwdrive.com/wield#3.-node-configuration" 1>&2
+    echo "Use this to change to the dagger user:"
+    echo "sudo su - dagger"
+    echo ""
+    echo "Exiting..."
+    exit 1
+    fi
+    ### Review
+    echo "Please review the information above has met the minimum install requirements."
+    echo ""
+    echo "16 Core CPU, 32GB RAM, Ubuntu 22.04, Kernel Version 5.15 or greater."
+    echo ""
+    echo "**Do you wish to continue with the installation? (yes/no)**"
+    read input
+    if [[ $input == "no" ]] || [[ $input == "n" ]]; then
+    echo "Exiting..."
+    exit 1
+    fi
+}
+
+system_checks_noninteractive() {
+    input="yes"
     ### Check if CPU cores is less than 16
     if (( NUM_CPU < 16 )); then
     echo ""
