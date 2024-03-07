@@ -802,7 +802,7 @@ if [[ "$1" == "upgrade-noninteractive" ]]; then
   sudo systemctl stop shdw-node.service
   uninstall
   install
-  start_wield
+  start_shdw_node
   check_shdw_node_version
   get_node_id
   exit 0
