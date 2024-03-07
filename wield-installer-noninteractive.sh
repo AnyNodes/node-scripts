@@ -523,6 +523,7 @@ checkWieldService() {
 
 
 system_checks() {
+    input="yes"
     ### Check if CPU cores is less than 16
     if (( NUM_CPU < 16 )); then
     echo ""
@@ -553,12 +554,12 @@ system_checks() {
     echo ""
     echo "16 Core CPU, 32GB RAM, Ubuntu 22.04, Kernel Version 5.15 or greater."
     echo ""
-    echo "**Do you wish to continue with the installation? (yes/no)**"
-    read input
-    if [[ $input == "no" ]] || [[ $input == "n" ]]; then
-    echo "Exiting..."
-    exit 1
-    fi
+    # echo "**Do you wish to continue with the installation? (yes/no)**"
+    # read input
+    # if [[ $input == "no" ]] || [[ $input == "n" ]]; then
+    # echo "Exiting..."
+    # exit 1
+    # fi
 }
 
 install_dependencies() {
