@@ -803,7 +803,7 @@ if [[ "$1" == "upgrade-noninteractive" ]]; then
   uninstall
   install
   start_wield
-  check_wield_version
+  check_shdw_node_version
   get_node_id
   exit 0
 fi
