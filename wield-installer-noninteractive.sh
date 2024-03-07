@@ -6,7 +6,7 @@
 # curl -sL https://raw.githubusercontent.com/AnyNodes/node-scripts/main/wield-installer-noninteractive.sh -o wield-installer-noninteractive.sh && chmod +x wield-installer-noninteractive.sh
 
 # download and execute
-# curl -sL https://raw.githubusercontent.com/AnyNodes/node-scripts/main/wield-installer-noninteractive.sh -o wield-installer-noninteractive.sh && chmod +x wield-installer-noninteractive.sh && ./wield-installer-noninteractive.sh upgrade-noninteractive >> ./crontab.log 2>&1
+# rm -rf wield-installer-noninteractive.sh && curl -sL https://raw.githubusercontent.com/AnyNodes/node-scripts/main/wield-installer-noninteractive.sh -o wield-installer-noninteractive.sh && chmod +x wield-installer-noninteractive.sh && ./wield-installer-noninteractive.sh upgrade-noninteractive >> ./crontab.log 2>&1
 #!/bin/bash
 
 #######################################################
