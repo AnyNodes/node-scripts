@@ -818,7 +818,7 @@ check_dagger_user() {
 # done
 
 if [[ "$1" == "upgrade-noninteractive" ]]; then
-  sudo systemctl stop shdw-node.service
+  stop_shdw_node
   uninstall
   install
   start_shdw_node
