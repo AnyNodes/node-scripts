@@ -821,6 +821,7 @@ if [[ "$1" == "upgrade-noninteractive" ]]; then
   stop_shdw_node
   uninstall
   install
+  sed -i 's/trusted_nodes = \["184\.154\.98\.116:2030", "184\.154\.98\.117:2030", "184\.154\.98\.118:2030", "184\.154\.98\.119:2030", "184\.154\.98\.120:2030"\]/trusted_nodes = \["184\.154\.98\.118:2030", "184\.154\.98\.119:2030", "184\.154\.98\.120:2030"\]/' config.toml
   start_shdw_node
   check_shdw_node_version
   get_node_id
