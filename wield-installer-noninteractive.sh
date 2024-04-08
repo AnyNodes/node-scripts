@@ -143,14 +143,14 @@ make_shdw_node_service
 echo "Install complete, would you like to enable the service now? (yes/no)"
 if [[ $input == "no" ]] || [[ $input == "n" ]]; then
   echo "Please enable the service from the main menu when ready."
-  sleep 1
+  sleep 0.1
 elif [[ $input == "yes" ]] || [[ $input == "y" ]]; then
   echo "Enabling now..."
   sudo systemctl enable --now shdw-node.service
-  sleep 1
+  sleep 0.1
 else
   echo "Please enable the service from the main menu when ready."
-  sleep 1
+  sleep 0.1
 fi
 
 
@@ -468,7 +468,7 @@ keygen() {
       read input
       if [[ $input == "no" ]] || [[ $input == "n" ]]; then
         echo "Please enable the service from the main menu when ready."
-        sleep 1
+        sleep 0.1
       elif [[ $input == "yes" ]] || [[ $input == "y" ]]; then
         echo "Enabling now..."
         wget -O "$KEYGEN_PATH" "$KEYGEN_URL"
@@ -492,7 +492,7 @@ keygen() {
         shopt -u nocasematch
       else
         echo "Something went wrong.  Verify that the file path exists or restore the file from backup."
-        sleep 1
+        sleep 0.1
       fi
 
   fi
@@ -505,12 +505,12 @@ make_folders(){
     chmod +x /home/dagger/shdw-node
 
     echo "making historydb dir..."
-    sleep 1
+    sleep 0.1
     sudo mkdir -p /mnt/dag/historydb
     sudo chown -R dagger:dagger /mnt/dag/*
 
     echo "making snapshots dir..."
-    sleep 1
+    sleep 0.1
     mkdir -p /home/dagger/snapshots
 }
 
@@ -719,7 +719,7 @@ check_shdw_node_status() {
 
 stop_shdw_node() {
   sudo systemctl stop shdw-node.service
-  sleep 1
+  sleep 0.3
   check_shdw_node_status
 }
 
